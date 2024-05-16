@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/nav_item.dart';
+
 class MainBottomNavBar extends StatefulWidget {
-  const MainBottomNavBar({super.key});
+  final List<NavItem> navItems;
+
+  const MainBottomNavBar({Key? key, required this.navItems}) : super(key: key);
 
   @override
   State<MainBottomNavBar> createState() => _MainBottomNavBarState();
@@ -9,38 +13,32 @@ class MainBottomNavBar extends StatefulWidget {
 
 class _MainBottomNavBarState extends State<MainBottomNavBar> {
   int currentPageIndex = 0;
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: Colors.amber,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
-          NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home'
-          ),
-          NavigationDestination(
-            icon: Badge(child: Icon(Icons.notifications_sharp)),
-            label: 'Notifications',
-          ),
-          NavigationDestination(
-            icon: Badge(
-              label: Text('2'),
-              child: Icon(Icons.messenger_sharp),
-            ),
-            label: 'Messages',
-          ),
-        ],
-      ),
-      body: const Placeholder(),
-    );
+        bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (int index) {
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
+          indicatorColor: Colors.amber,
+          selectedIndex: currentPageIndex,
+          destinations:
+              widget.navItems.map((el) => el.menuDestination).toList(),
+        ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          children: widget.navItems.map((el) => el.appPage).toList(),
+        ));
   }
 }
