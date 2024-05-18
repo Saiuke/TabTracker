@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class NavItem {
-  final Widget appPage;
+  final String appRoute;
   final NavigationDestination menuDestination;
 
-  NavItem({required this.appPage, required this.menuDestination});
+  NavItem({required this.appRoute, required this.menuDestination});
 }

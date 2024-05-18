@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../widgets/navigation_bar.dart';
 
 class TransactionsPage extends StatefulWidget {
-  const TransactionsPage({super.key});
+  final ValueNotifier<int> currentPageIndex;
+  const TransactionsPage({super.key, required this.currentPageIndex});
 
   @override
   State<TransactionsPage> createState() => _TransactionsPageState();
@@ -10,6 +12,15 @@ class TransactionsPage extends StatefulWidget {
 class _TransactionsPageState extends State<TransactionsPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Transactions Page'));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Transactions'),
+        automaticallyImplyLeading: false,
+      ),
+      body: const Center(
+        child: Text('Transactions Page'),
+      ),
+      bottomNavigationBar: MainBottomNavBar(currentPageIndex: widget.currentPageIndex),
+    );
   }
 }

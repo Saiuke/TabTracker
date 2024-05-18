@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../widgets/navigation_bar.dart';
 
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
+  final ValueNotifier<int> currentPageIndex;
+
+  const DashboardPage({super.key, required this.currentPageIndex});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -10,6 +13,16 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Dashboard Page'));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Dashboard'),
+        automaticallyImplyLeading: false,
+      ),
+      body: const Center(
+        child: Text('Dashboard Page'),
+      ),
+      bottomNavigationBar:
+          MainBottomNavBar(currentPageIndex: widget.currentPageIndex),
+    );
   }
 }

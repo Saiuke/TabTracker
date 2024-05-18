@@ -1,44 +1,58 @@
 import 'package:flutter/material.dart';
-
 import '../models/nav_item.dart';
 
 class MainBottomNavBar extends StatefulWidget {
-  final List<NavItem> navItems;
+  final ValueNotifier<int> currentPageIndex;
 
-  const MainBottomNavBar({Key? key, required this.navItems}) : super(key: key);
+  const MainBottomNavBar({super.key, required this.currentPageIndex});
 
   @override
   State<MainBottomNavBar> createState() => _MainBottomNavBarState();
 }
 
 class _MainBottomNavBarState extends State<MainBottomNavBar> {
-  int currentPageIndex = 0;
-  final PageController _pageController = PageController();
+  final List<NavItem> navItems = <NavItem>[
+    NavItem(
+      appRoute: '/',
+      menuDestination: const NavigationDestination(
+        selectedIcon: Icon(Icons.dashboard),
+        icon: Icon(Icons.dashboard_outlined),
+        label: 'Dashboard',
+      ),
+    ),
+    NavItem(
+      appRoute: '/transactions',
+      menuDestination: const NavigationDestination(
+        selectedIcon: Icon(Icons.money),
+        icon: Icon(Icons.money_outlined),
+        label: 'Transactions',
+      ),
+    ),
+    NavItem(
+      appRoute: '/customers',
+      menuDestination: const NavigationDestination(
+        selectedIcon: Icon(Icons.people),
+        icon: Icon(Icons.people_outlined),
+        label: 'Customers',
+      ),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: NavigationBar(
+    return ValueListenableBuilder<int>(
+      valueListenable: widget.currentPageIndex,
+      builder: (context, value, child) {
+        return NavigationBar(
           onDestinationSelected: (int index) {
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
+            widget.currentPageIndex.value = index;
+            Navigator.pushReplacementNamed(context, navItems[index].appRoute);
           },
           indicatorColor: Colors.amber,
-          selectedIndex: currentPageIndex,
-          destinations:
-              widget.navItems.map((el) => el.menuDestination).toList(),
-        ),
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          children: widget.navItems.map((el) => el.appPage).toList(),
-        ));
+          selectedIndex: value,
+          destinations: navItems.map((el) => el.menuDestination).toList(),
+        );
+      },
+    );
   }
 }
